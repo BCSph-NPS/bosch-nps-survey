@@ -125,7 +125,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // Firebase global variables provided by the environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -178,6 +178,7 @@
         const commentInput = document.getElementById('comment');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const commentSection = document.getElementById('commentSection');
 
         let allAnswers = {};
         const categories = ['appointment', 'serviceQuality', 'workshopFacility', 'serviceAdvisor', 'overallNPS'];
@@ -288,4 +289,3 @@
     </script>
 </body>
 </html>
-
