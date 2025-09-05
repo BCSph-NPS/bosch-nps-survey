@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosch Car Service NPS Survey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb;
+        }
+        .glow { box-shadow: 0 0 10px rgba(0,0,0,0.1), 0 0 20px rgba(0,0,0,0.05); }
+        .score-button {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            color: #4a5568;
+            border-color: #cbd5e1;
+        }
+        .score-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .score-button.selected {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Container -->
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-2xl w-full glow">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Bosch Car Service</h1>
+            <h2 class="text-2xl font-semibold text-gray-700 mt-2">NPS Survey</h2>
+            <p class="mt-2 text-gray-500">Your feedback helps us improve our service!</p>
+        </div>
+
+        <!-- Survey Section -->
+        <div id="surveySection" class="space-y-6">
+
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="text-center space-y-4">
+                <p class="text-lg font-medium text-gray-700">
+                    Thank you for choosing Bosch Car Service. We'd love to hear about your recent visit.
+                </p>
+                <button id="startSurveyBtn" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out">
+                    Start Survey
+                </button>
+            </div>
+
+            <!-- Survey Questions Screen -->
+            <div id="questionsScreen" class="hidden space-y-8">
+                
+                <!-- Question 1: Appointment -->
+                <div class="space-y-4">
+                    <p class="text-lg font-medium text-gray-700">1. On a scale of 0-10, how likely are you to recommend the **ease of setting up your visit**?</p>
+                    <div id="q1-score-buttons" class="flex flex-wrap justify-center gap-2" data-category="appointment"></div>
+                    <div id="q1-emoji" class="text-center text-4xl mt-2 h-10"></div>
+                </div>
+
+                <!-- Question 2: Service Quality -->
+                <div class="space-y-4">
+                    <p class="text-lg font-medium text-gray-700">2. On a scale of 0-10, how likely are you to recommend the **workmanship performed on your vehicle**?</p>
+                    <div id="q2-score-buttons" class="flex flex-wrap justify-center gap-2" data-category="serviceQuality"></div>
+                    <div id="q2-emoji" class="text-center text-4xl mt-2 h-10"></div>
+                </div>
+                
+                <!-- Question 3: Workshop Facility -->
+                <div class="space-y-4">
+                    <p class="text-lg font-medium text-gray-700">3. On a scale of 0-10, how likely are you to recommend the **service center environment**?</p>
+                    <div id="q3-score-buttons" class="flex flex-wrap justify-center gap-2" data-category="workshopFacility"></div>
+                    <div id="q3-emoji" class="text-center text-4xl mt-2 h-10"></div>
+                </div>
+                
+                <!-- Question 4: Service Advisor -->
+                <div class="space-y-4">
+                    <p class="text-lg font-medium text-gray-700">4. On a scale of 0-10, how likely are you to recommend your **interaction with our team**?</p>
+                    <div id="q4-score-buttons" class="flex flex-wrap justify-center gap-2" data-category="serviceAdvisor"></div>
+                    <div id="q4-emoji" class="text-center text-4xl mt-2 h-10"></div>
+                </div>
+                
+                <!-- Main NPS Question -->
+                <div class="space-y-4">
+                    <p class="text-lg font-medium text-gray-700">5. On a scale of 0-10, how likely are you to recommend Bosch Car Service to a friend or colleague?</p>
+                    <div id="q5-score-buttons" class="flex flex-wrap justify-center gap-2" data-category="overallNPS"></div>
+                    <div id="q5-emoji" class="text-center text-4xl mt-2 h-10"></div>
+                </div>
+
+                <div id="commentSection" class="hidden">
+                    <label for="comment" class="block text-sm font-medium text-gray-700">
+                        Please share your thoughts on what you liked and your comments on any areas and aspects that we can improve on.
+                    </label>
+                    <textarea id="comment" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-300 ease-in-out"></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button id="submitBtn" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out hidden">
+                        Submit Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
+            <p id="messageText" class="text-lg font-semibold text-gray-800"></p>
+            <button onclick="document.getElementById('messageBox').classList.add('hidden')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Firebase global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        let app, db, auth, userId;
+        let isAuthReady = false;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                } else {
+                    userId = null;
+                }
+                isAuthReady = true;
+                console.log("Firebase Auth State Changed. User ID:", userId);
+            });
+
+            async function initializeAuth() {
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("Signed in with custom token.");
+                    } else {
+                        await signInAnonymously(auth);
+                        console.log("Signed in anonymously.");
+                    }
+                } catch (error) {
+                    console.error("Firebase Auth Error:", error);
+                    showMessage("Authentication failed. Please try again.");
+                }
+            }
+            initializeAuth();
+        } catch (error) {
+            console.error("Firebase Initialization Error:", error);
+            showMessage("Failed to initialize the application. Please check the configuration.");
+        }
+
+        const startSurveyBtn = document.getElementById('startSurveyBtn');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const questionsScreen = document.getElementById('questionsScreen');
+        const submitBtn = document.getElementById('submitBtn');
+        const commentInput = document.getElementById('comment');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        let allAnswers = {};
+        const categories = ['appointment', 'serviceQuality', 'workshopFacility', 'serviceAdvisor', 'overallNPS'];
+        const questionEmojis = ['q1-emoji', 'q2-emoji', 'q3-emoji', 'q4-emoji', 'q5-emoji'];
+
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+
+        startSurveyBtn.addEventListener('click', () => {
+            welcomeScreen.classList.add('hidden');
+            questionsScreen.classList.remove('hidden');
+        });
+        
+        function checkAllQuestionsAnswered() {
+            const answeredCount = Object.keys(allAnswers).length;
+            const requiredCount = categories.length;
+            if (answeredCount === requiredCount) {
+                submitBtn.classList.remove('hidden');
+                commentSection.classList.remove('hidden');
+            } else {
+                submitBtn.classList.add('hidden');
+                commentSection.classList.add('hidden');
+            }
+        }
+
+        // Generate and set up score buttons for all questions
+        categories.forEach((category, index) => {
+            const container = document.getElementById(`q${index + 1}-score-buttons`);
+            for (let i = 0; i <= 10; i++) {
+                const button = document.createElement('button');
+                
+                button.textContent = i;
+                button.className = `score-button`;
+                button.dataset.score = i;
+                button.dataset.questionId = `q${index + 1}-emoji`;
+
+                button.addEventListener('click', () => {
+                    container.querySelectorAll('.score-button').forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                    allAnswers[category] = i;
+
+                    const emojiContainer = document.getElementById(button.dataset.questionId);
+                    let emoji = '';
+                    if (i >= 9) {
+                        emoji = '😁';
+                    } else if (i >= 7) {
+                        emoji = '🙂';
+                    } else {
+                        emoji = '😞';
+                    }
+                    emojiContainer.textContent = emoji;
+                    
+                    checkAllQuestionsAnswered();
+                });
+                
+                container.appendChild(button);
+            }
+        });
+
+        // Submit button logic
+        submitBtn.addEventListener('click', async () => {
+            if (Object.keys(allAnswers).length !== categories.length) {
+                showMessage("Please answer all questions before submitting.");
+                return;
+            }
+
+            const comment = commentInput.value.trim();
+            const npsType = (allAnswers.overallNPS <= 6) ? 'Detractor' : (allAnswers.overallNPS <= 8) ? 'Passive' : 'Promoter';
+
+            if (!isAuthReady || !userId) {
+                showMessage("Authentication not ready. Please wait and try again.");
+                return;
+            }
+
+            try {
+                const collectionPath = `/artifacts/${appId}/public/data/nps_surveys`;
+                
+                await addDoc(collection(db, collectionPath), {
+                    overallScore: allAnswers.overallNPS,
+                    comment: comment,
+                    npsType: npsType,
+                    userId: userId,
+                    timestamp: serverTimestamp(),
+                    answers: allAnswers,
+                });
+                console.log("Document successfully written!");
+
+                // Reset the form
+                allAnswers = {};
+                commentInput.value = '';
+                questionsScreen.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+                
+                document.querySelectorAll('.score-button').forEach(btn => btn.classList.remove('selected'));
+                questionEmojis.forEach(id => {
+                    document.getElementById(id).textContent = '';
+                });
+                
+                showMessage("Thank you for your feedback!");
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showMessage("Error submitting survey. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>
